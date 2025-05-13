@@ -8,7 +8,7 @@
 
 2/ allowing multiple downloaders (*peers*) to download pieces from one another
 
-0.2 This .c file is a Bit Torrent client that currently allows users to download files piece by piece from possibly multiple peers using the Bit Torrent protocol. Further development will allow downloading of an entire file asynchronously from multiple peers. There is currently no choking algorithm implemented. I intend to implement one in the next iteration. I also intend to break up this .c file into a more managable folder of different files. Currently, sections of code are marked out in comments that follow the general workflow of a Bit Torrent exchange (see [Section 2](workflow) below).
+0.2 This .c compiles into a Bit Torrent client that currently allows users to download files piece by piece from possibly multiple peers using the Bit Torrent protocol. Further development will allow downloading of an entire file asynchronously from multiple peers. There is currently no choking algorithm implemented. I intend to implement one in the next iteration. I also intend to break up this .c file into a more managable folder of different files. Currently, sections of code are marked out in comments that follow the general workflow of a Bit Torrent exchange (see [Section 2](workflow) below).
 
 0.3 The Bit Torrent protocol is specified at this BitTorrent.org page: https://www.bittorrent.org/beps/bep_0003.html. The remaining sections of this description file summarises some of that information.
 
