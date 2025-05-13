@@ -151,7 +151,7 @@ This decodes properly b-encoded data.
 
 ### 3.2 `./yb1.sh info <filename.torrent>`
 
-This prints out the contents of a torrent file. (See Section 1.1 above.)
+This prints out the contents of a torrent file. (See [Section 1.1](file-contents) above.)
 
 ### 3.3 `./yb1.sh peers <filename.torrent>`
 
@@ -167,7 +167,7 @@ This downloads the piece of index <piece_index> of the file specified in <filena
 
 ### 3.6 `./yb1.sh download -o <save_path> <filename.torrent>`
 
-This command is not fully implemented. This does download an entire file and saves to <save_path>, but the download is not asynchronous and simultaneous. Pieces are only downloaded one after another and assembled.
+This command is not fully implemented. This does download an entire file and saves to <save_path>, but the download is not asynchronous and simultaneous. Pieces are only downloaded one after another using `download-piece` and assembled.
 
 ## 4. Licence
 
