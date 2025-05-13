@@ -409,16 +409,16 @@ unsigned char* findHash(const unsigned char* encoded_str){
     struct listCounter listStats = gStepper(substring, true);
     int dictLength = gStepper(substring, true).stepper + 1;
     
-    unsigned char sortedDict[dictLength];
+    unsigned char buffer[dictLength];
 
     //memcpy
     for(int i = 0; i < dictLength; i++){
-        sortedDict[i] = substring[i]; 
+        buffer[i] = substring[i]; 
     }
    
     unsigned char* hash = (unsigned char*)malloc(SHA_DIGEST_LENGTH);
     memset(hash, 0x0, SHA_DIGEST_LENGTH); 
-    SHA1(sortedDict, dictLength, hash);
+    SHA1(buffer, dictLength, hash);
 
     return hash;
 
@@ -1469,7 +1469,7 @@ int main(int argc, char* argv[]) {
 
     if (strcmp(command, "download_piece") == 0){
 
-        if (argc < 5) {
+        if (argc < 6) {
             fprintf(stderr, "Usage: your_bittorrent.sh download_piece -o <save address> <file name> <piece index>\n");
             return 1;
         }
@@ -1584,6 +1584,8 @@ int main(int argc, char* argv[]) {
                             printf("%02x",hash[z]);
                         }
                         printf("\n");
+
+                        memcpy(hash,thisPiece.piece_hash,20);
                         printf("Piece hash: ");
                         for(int z = 0; z < 20; z++){
                             printf("%02x",hash[z]);
@@ -1614,6 +1616,12 @@ int main(int argc, char* argv[]) {
                             torrent_info.info_hash = NULL;
                             free(torrent_info.piece_hashes);
                             torrent_info.piece_hashes = NULL;
+                            free(thisPiece.piece_hash);
+                            thisPiece.piece_hash = NULL;
+                            free(thisPiece.buffer);
+                            thisPiece.buffer = NULL;
+                            free(thisPiece.blocks_have);
+                            thisPiece.blocks_have = NULL;
 
                                 return 1;
                             }
@@ -1628,6 +1636,12 @@ int main(int argc, char* argv[]) {
                             torrent_info.info_hash = NULL;
                             free(torrent_info.piece_hashes);
                             torrent_info.piece_hashes = NULL;
+                            free(thisPiece.piece_hash);
+                            thisPiece.piece_hash = NULL;
+                            free(thisPiece.buffer);
+                            thisPiece.buffer = NULL;
+                            free(thisPiece.blocks_have);
+                            thisPiece.blocks_have = NULL;
 
                             return 0;
                         }
@@ -1658,11 +1672,121 @@ int main(int argc, char* argv[]) {
         torrent_info.info_hash = NULL;
         free(torrent_info.piece_hashes);
         torrent_info.piece_hashes = NULL;
+        free(thisPiece.piece_hash);
+        thisPiece.piece_hash = NULL;
+        free(thisPiece.buffer);
+        thisPiece.buffer = NULL;
+        free(thisPiece.blocks_have);
+        thisPiece.blocks_have = NULL;
 
         return 0;
     }
 
+    if (strcmp(command, "download") == 0){
+
+    if (argc < 4) {
+        fprintf(stderr, "Usage: your_bittorrent.sh download -o <save address> <file name>\n");
+        return 1;
+    }
+
+    // poor man's implementation:
+    // download pieces in order rather than asynchronously
+    const char* save_address = argv[3];
+    const char* file_name = argv[4];
+
+    //open torrent file to discover number of pieces and piece lengths;
+    struct listStruct opened_file = fileOpener(file_name);
+    struct torInfo torrent_info = findValues(opened_file.decoded_str);
+    int piece_num = (int)(torrent_info.hashes_length/20);//number of pieces in a file
+    size_t piece_length = torrent_info.piece_length;
+    size_t file_length = torrent_info.file_length;
+
+
+    //create names for files to store each piece
+    char piece_address[strlen(save_address)+ 5];
+    memset(piece_address,0,strlen(save_address) + 5);
+    memcpy(piece_address,save_address,strlen(save_address));
+
+    char* arg_v[6];
     
+    arg_v[0] = "program-name";
+    arg_v[1] = "download_piece";
+    arg_v[2] = "-o";
+    arg_v[3] = malloc(strlen(save_address) + 5);
+    memset(arg_v[3],0,strlen(save_address) + 5);
+    arg_v[4] = (char*)file_name;
+    arg_v[5] = malloc(4);
+    memset(arg_v[5],0,4);
+    //populate arg_v for calling main() with download-piece command
+    
+    char piece_index[5];
+    memset(piece_index,0,5);
+
+    // download pieces in order
+    for(int i = 0; i < piece_num; i++){
+
+        memset(arg_v[3],0,strlen(save_address) + 5);
+        memset(arg_v[5],0,4);
+   
+        sprintf(piece_index,"%d",i);
+        memcpy(piece_address + strlen(save_address),piece_index,strlen(piece_index) + 1);
+        printf("%s\n",piece_address);
+
+        memcpy(arg_v[3],piece_address,strlen(save_address) + 5);
+        memcpy(arg_v[5],piece_index,strlen(piece_index));
+
+        main(6, arg_v);
+        
+    }
+
+
+    // copy piece files to <save address>, delete piece files
+    FILE* fileptr = NULL;
+    FILE* savefptr = fopen(save_address,"w");
+    char buffer[32768];    
+    int count = 0;
+    int total_length = 0;
+
+    for(int i = 0; i < piece_num; i++){
+        // open piece files
+        sprintf(piece_index,"%d",i);
+        memcpy(piece_address + strlen(save_address),piece_index,strlen(piece_index) + 1);
+        fileptr = fopen(piece_address,"r");
+
+        // write to <save address>
+        if(i == piece_num - 1){
+            piece_length = file_length - i*piece_length;
+        }
+        count = fread(buffer,1,piece_length,fileptr);
+        
+        if(count!=piece_length){
+            printf("Did not read properly.\n");
+            fclose(fileptr);
+            fileptr = NULL;
+            break;
+        }
+
+        fwrite(buffer,1,count,savefptr);
+
+        total_length += count;
+        fclose(fileptr);
+        fileptr = NULL;
+        count = 0;
+
+        //delete file holding piece read
+        if (remove(piece_address) != 0) {
+            printf("Error: Unable to delete the file %s.\n",piece_address);
+        }
+
+    }
+
+    fclose(savefptr);
+  
+
+    return 0;
+    
+    }
+
     else {
         fprintf(stderr, "Unknown command: %s\n", command);
         return 1;
