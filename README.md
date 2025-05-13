@@ -165,6 +165,10 @@ This establishes a TCP handshake with a peer at <peer_ip>:<peer_port> downloadin
 
 This downloads the piece of index <piece_index> of the file specified in <filename.torrent> and saves it at <save_path>.
 
+### 3.6 `./yb1.sh download -o <save_path> <filename.torrent> <piece index>`
+
+This command is not fully implemented. This does download an entire file and saves to <save_path>, but the download is not asynchronous and simultaneous. Pieces are only downloaded one after another and assembled.
+
 ## 4. Licence
 
 This repository is distributed under the MIT licence.
