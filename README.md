@@ -8,11 +8,11 @@
 
 2/ allowing multiple downloaders (*peers*) to download pieces from one another
 
-0.2 This .c compiles into a Bit Torrent client that currently allows users to download files piece by piece from possibly multiple peers using the Bit Torrent protocol. Further development will allow downloading of an entire file asynchronously from multiple peers. There is currently no choking algorithm implemented. I intend to implement one in the next iteration. I also intend to break up this .c file into a more managable folder of different files. Currently, sections of code are marked out in comments that follow the general workflow of a Bit Torrent exchange (see [Section 2](workflow) below).
+0.2 This .c compiles into a Bit Torrent client that currently allows users to download files piece by piece from possibly multiple peers using the Bit Torrent protocol. Further development will allow downloading of an entire file asynchronously from multiple peers. There is currently no choking algorithm implemented. I intend to implement one in the next iteration. I also intend to break up this .c file into a more managable folder of different files. Currently, sections of code are marked out in comments that follow the general workflow of a Bit Torrent exchange (see [Section 2](Workflow) below).
 
 0.3 The Bit Torrent protocol is specified at this BitTorrent.org page: https://www.bittorrent.org/beps/bep_0003.html. The remaining sections of this description file summarises some of that information.
 
-0.4 See [Section 3](manual) below for instructions/manual. Epoll is used to handle asynchronous requests, which means any executable compiled from this .c file runs best on Linux machines.
+0.4 See [Section 3](Manual) below for instructions/manual. Epoll is used to handle asynchronous requests, which means any executable compiled from this .c file runs best on Linux machines.
 
 ## 1. Torrent file
 
@@ -54,7 +54,7 @@ Therefore each block has an offset of a mutiple of 2^14 within its piece.
 
 ### 2.1 Announce
 
-As mentioned in [Section 1.1.1](file-contents) above, the downloader first sends a GET request to to the tracker URL to get the ip address and available port numbers of all peers. This GET request requires the downloader to provide a 20-character long peer id. A common peer id is 0011223344556678899. But a connection can be refused if the downloader's id clashes with the peer id of another downloading peer. There is an official peer id convention: https://www.bittorrent.org/beps/bep_0020.html. In this .c file, the peer id is pseudo-randomly generated.
+As mentioned in [Section 1.1](File-contents) above, the downloader first sends a GET request to to the tracker URL to get the ip address and available port numbers of all peers. This GET request requires the downloader to provide a 20-character long peer id. A common peer id is 0011223344556678899. But a connection can be refused if the downloader's id clashes with the peer id of another downloading peer. There is an official peer id convention: https://www.bittorrent.org/beps/bep_0020.html. In this .c file, the peer id is pseudo-randomly generated.
 
 ### 2.2 Handshake
 
@@ -151,7 +151,7 @@ This decodes properly b-encoded data.
 
 ### 3.2 `./yb1.sh info <filename.torrent>`
 
-This prints out the contents of a torrent file. (See [Section 1.1](file-contents) above.)
+This prints out the contents of a torrent file. (See [Section 1.1](File-contents) above.)
 
 ### 3.3 `./yb1.sh peers <filename.torrent>`
 
