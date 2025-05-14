@@ -1,11 +1,7 @@
 #!/bin/sh
 #
-# DON'T EDIT THIS!
-#
-# CodeCrafters uses this file to test your code. Don't make any changes here!
-#
-# DON'T EDIT THIS!
+
 set -e
 tmpFile=$(mktemp)
-gcc src/main.c -o $tmpFile -lcurl -lcrypto 
+gcc main.c -o $tmpFile -lcurl -lcrypto 
 exec "$tmpFile" "$@"
