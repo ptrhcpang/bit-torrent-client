@@ -2,17 +2,17 @@
 
 ## 0. Introduction 
 
-0.1 Bit torrent is a communication protocol that allows users to download large files quickly by:
+**0.1** Bit torrent is a communication protocol that allows users to download large files quickly by:
 
 1/ breaking up a file into *pieces* (further broken into blocks)
 
 2/ allowing multiple downloaders (*peers*) to download pieces from one another
 
-0.2 This .c compiles into a Bit Torrent client that currently allows users to download files piece by piece from possibly multiple peers using the Bit Torrent protocol. Further development will allow downloading of an entire file asynchronously from multiple peers. There is currently no choking algorithm or endgame implemented. I intend to implement one in the next iteration, beyond the parameters described in Codecrafters from which this project originated (which did not even require download from multiple peers). I also intend to break up this .c file into a more managable folder of different files. Currently, sections of code are marked out in comments that follow the general workflow of a Bit Torrent exchange (see [Section 2](Workflow) below).
+**0.2** This .c compiles into a Bit Torrent client that currently allows users to download files piece by piece from possibly multiple peers using the Bit Torrent protocol. Further development will allow downloading of an entire file asynchronously from multiple peers. There is currently no choking algorithm or endgame implemented. I intend to implement one in the next iteration, beyond the parameters described in Codecrafters from which this project originated (which did not even require download from multiple peers). I also intend to break up this .c file into a more managable folder of different files. Currently, sections of code are marked out in comments that follow the general workflow of a Bit Torrent exchange (see [Section 2](Workflow) below).
 
-0.3 The Bit Torrent protocol is specified at this BitTorrent.org page: https://www.bittorrent.org/beps/bep_0003.html. The remaining sections of this description file summarises some of that information.
+**0.3** The Bit Torrent protocol is specified at this BitTorrent.org page: https://www.bittorrent.org/beps/bep_0003.html. The remaining sections of this description file summarises some of that information.
 
-0.4 See [Section 3](Manual) below for instructions/manual. Epoll is used to handle asynchronous requests, which means any executable compiled from this .c file runs best on Linux machines.
+**0.4** See [Section 3](Manual) below for instructions/manual. Epoll is used to handle asynchronous requests, which means any executable compiled from this .c file runs best on Linux machines.
 
 ## 1. Torrent file
 
