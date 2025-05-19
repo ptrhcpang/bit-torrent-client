@@ -163,11 +163,11 @@ This establishes a TCP handshake with a peer at <peer_ip>:<peer_port> downloadin
 
 ### 3.5 `./yb1.sh download_piece -o <save_path> <filename.torrent> <piece index>`
 
-This downloads the piece of index <piece_index> of the file specified in <filename.torrent> and saves it at <save_path>.
+This downloads the piece of index <piece_index> of the file specified in <filename.torrent> and saves it at <save_path> by downloading blocks within a piece asynchronously and from possibly multipler peers.
 
 ### 3.6 `./yb1.sh download -o <save_path> <filename.torrent>`
 
-This command is not fully implemented. This does download an entire file and saves to <save_path>, but the download is not asynchronous and simultaneous. Pieces are only downloaded one after another using `download-piece` and assembled.
+This command is not fully implemented. This does download an entire file and saves to <save_path>, but the download is not fully asynchronous and simultaneous. Pieces are only downloaded one after another using `download-piece` and assembled.
 
 ## 4. Licence
 
